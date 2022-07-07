@@ -14,6 +14,7 @@ public class git_test {
         System.out.println("host modify test");
         System.out.println("master mofify test");
         System.out.println("host-fix need test");
-
+        System.out.println("push test1");
+        System.out.println("push test2");
     }
 }

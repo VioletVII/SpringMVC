@@ -16,5 +16,6 @@ public class git_test {
         System.out.println("host-fix need test");
         System.out.println("push test1");
         System.out.println("push test2");
+        System.out.println("pull test2");
     }
 }

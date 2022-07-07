@@ -10,5 +10,6 @@ public class git_test {
         System.out.println("hello git by idea");
         System.out.println("hello git by idea Second");
         System.out.println("hello git by idea Thrid");
+        System.out.println("hello git by idea four");
     }
 }

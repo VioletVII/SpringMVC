@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- MyBatis中可以面向接口操作数据，要保证两个一致
+mapper接口的全类名和映射文件的命名空间（namespace）保持一致
+mapper接口中方法的方法名和映射文件中编写SQL的标签的id属性保持一致-->
+<!--
+如果查询出的数据只有一条，可以通过
+    实体类对象接收
+    List集合接收
+    Map集合接收，结果{password=123456, sex=男, id=1, age=23, username=admin}
+如果查询出的数据有多条，一定不能用实体类对象接收，会抛异常TooManyResultsException，可以通过
+    实体类类型的LIst集合接收
+    Map类型的LIst集合接收
+    在mapper接口的方法上添加@MapKey注解:此时将每一条数据作为map集合的值，以某个字段作为键(具有唯一性，主键)
+
+注意：不能用一个实体类或一个Map集合接受，多条语句查询结构，会报TooManyResultsException
+-->
+<mapper namespace="mappers.SelectMapper">
+    <!--User getUserById(@Param("id") int id);-->
+    <select id="getUserById" resultType="User">
+        select * from t_user where id=#{id}
+    </select>
+    <!--int getCount();-->
+    <select id="getCount" resultType="int">
+        select count(*) from t_user
+    </select>
+    <!--List<User> getUserByIdToList(@Param("id") int id);-->
+    <select id="getUserByIdToList" resultType="user">
+        select * from t_user where id=#{id}
+    </select>
+    <!--Map<String,Object> getUserByIdToMap(@Param("id") int id);-->
+    <select id="getUserByIdToMap" resultType="Map">
+        select * from t_user where id=#{id}
+    </select>
+    <!--List<User> getAllUsersTolist();-->
+    <select id="getAllUsersTolist" resultType="User">
+        select * from t_user
+    </select>
+    <!--List<Map<String,Object>> getAllUsersToListInMap();-->
+    <select id="getAllUsersToListInMap" resultType="map">
+        select * from t_user
+    </select>
+    <!--Map<String,Object> getAllUsersToMapKey();-->
+    <select id="getAllUsersToMapKey" resultType="map">
+        select * from t_user
+    </select>
+
+    <!--List<User> getUserByByLikeUsername(@Param("username")String username);-->
+    <select id="getUserByByLikeUsername" resultType="User">
+        <!--select * from t_user where username like '%${username}%'-->
+        <!--select * from t_user where username like concat('%',#{username},'%')-->
+        select * from t_user where username like "%"#{username}"%"
+    </select>
+
+    <!--int deleteUserMore(@Param("ids")String ids);
+    不能使用#{ids},因为#{}会自动添加'',即in('1,2,3'),sql语句会出错
+    -->
+    <delete id="deleteUserMore">
+        delete from t_user where id in(${ids})
+    </delete>
+
+    <!--List<User> getAllUsersTolistFromTable(@Param("table")String table);
+    不能使用#{table},因为#{}会自动添加''
+    -->
+    <select id="getAllUsersTolistFromTable" resultType="User">
+        select * from ${table}
+    </select>
+
+    <!--int insertUserGetId(User user);-->
+    <insert id="insertUserGetId" useGeneratedKeys="true" keyProperty="id">
+        insert into t_user values (null ,#{username},#{password},#{email})
+    </insert>
+</mapper>

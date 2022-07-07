@@ -1,0 +1,13 @@
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>测试域对象共享数据_success</h3>
+<p th:text="${testRequestScope}"></p> <!--没有错误的-->
+<p th:text="${session.testSessionScope}"></p> <!--没有错误的-->
+<p th:text="${application.TestApplicationScope}"></p> <!--没有错误的-->
+</body>
+</html>

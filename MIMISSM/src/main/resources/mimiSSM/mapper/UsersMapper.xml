@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- MyBatis中可以面向接口操作数据，要保证两个一致
+mapper接口的全类名和映射文件的命名空间（namespace）保持一致
+mapper接口中方法的方法名和映射文件中编写SQL的标签的id属性保持一致-->
+<mapper namespace="mimiSSM.mapper.UsersMapper">
+    <!--List<Users> getAllUsers();-->
+    <select id="getAllUsers" resultType="mimiSSM.pojo.Users">
+        select * from users order by uid desc;
+    </select>
+
+    <select id="splitPage"  parameterType="java.lang.Integer" resultType="mimiSSM.pojo.Users">
+        select * from users order by uid desc
+    </select>
+</mapper>

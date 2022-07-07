@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- MyBatis中可以面向接口操作数据，要保证两个一致
+mapper接口的全类名和映射文件的命名空间（namespace）保持一致
+mapper接口中方法的方法名和映射文件中编写SQL的标签的id属性保持一致-->
+<mapper namespace="mappers.empMapper">
+<!--
+解决字段名和属性名不一致的情况
+1.为字段起别名，保持和属性名一致
+select id,emp_name empName,age,email from t_emp
+2.设置全局配置，将_自动映射为驼峰(常用)
+<settings><setting name="mapUnderscoreToCamelCase" value="false"/></settings>
+3.通过resultMap设置自定义的映射关系
+
+解决多对一的关系:
+a.使用级联属性赋值：通过resultMap设置自定义的映射关系
+b.使用association
+c.使用分布查询
+-->
+    <!--
+resultMap：设置自定义映射
+    属性：
+        id：表示自定义映射的唯一标识，不能重复
+        type：查询的数据要映射的实体类的类型
+    子标签：
+        id：设置主键的映射关系
+        result：设置普通字段的映射关系
+            子标签属性：
+            property：设置映射关系中实体类中的属性名
+            column：设置映射关系中表中的字段名
+    -->
+    <resultMap id="empResultMap" type="Employee">
+        <id property="id" column="id"></id>
+        <result property="empName" column="emp_name"></result>
+        <result property="age" column="age"></result>
+        <result property="email" column="email"></result>
+    </resultMap>
+    <!--List<Employee> getAllEmployee();-->
+    <select id="getAllEmployee" resultMap="empResultMap">
+        <!--select id,emp_name empName,age,email from t_emp 给查询的值设置别名-->
+        select * from t_emp
+    </select>
+
+    <select id="getAllEmployeeOld" resultType="employee">
+        <!--select id,emp_name empName,age,email from t_emp 给查询的值设置别名-->
+        select * from t_emp
+    </select>
+
+    
+    
+    <!--处理多对一的关系1，使用resultMap设置自定义的映射关系，即级联赋值-->
+    <resultMap id="EmpAndDeptResultMapOne" type="Employee">
+        <id property="id" column="id"></id>
+        <result property="empName" column="emp_name"></result>
+        <result property="age" column="age"></result>
+        <result property="email" column="email"></result>
+        <result property="demp.did" column="did"></result>
+        <result property="demp.depName" column="dep_name"></result>
+    </resultMap>
+
+    <!--处理多对一的关系2:使用association-->
+    <resultMap id="EmpAndDeptResultMapTwo" type="Employee">
+        <id property="id" column="id"></id>
+        <result property="empName" column="emp_name"></result>
+        <result property="age" column="age"></result>
+        <result property="email" column="email"></result>
+        <!--
+        association：处理多对一的映射关系：
+            property：需要处理多对一的映射关系的属性名
+            javaType：该属性的类型
+        -->
+        <association property="demp" javaType="Demptment">
+            <id property="did" column="did"></id>
+            <result property="depName" column="dep_name"></result>
+        </association>
+    </resultMap>
+    <!--Employee getEmpAndDept(@Param("id")Integer id);-->
+    <select id="getEmpAndDept" resultMap="EmpAndDeptResultMapTwo">
+        select * from t_emp left join t_dept on t_emp.did=t_dept.did where t_emp.id=#{id}
+    </select>
+    
+    <!--处理多对一的关系2:使用分布查询-->
+    <resultMap id="empAndDeptByStepResultMap" type="employee">
+        <id property="id" column="id"></id>
+        <result property="empName" column="emp_name"></result>
+        <result property="age" column="age"></result>
+        <result property="email" column="email"></result>
+        <!--
+        select：设置分布查询的sql的唯一标识（namespace.SQLId或mapper接口的全类名.方法名）
+        column：设置分步查询的条件
+        etchType：当开启了全局的延迟加载之后，可以通过该属性手动控制延迟加载的效果，
+        fetchType=“lazy(延迟加载)|eager(立即加载)”
+        -->
+        <association property="demp"
+                     select="mappers.deptMapper.getEmpAndDeptByStepTwo"
+                     column="did"
+                     fetchType="lazy"></association>
+    </resultMap>
+    <!--Employee getEmpAndDeptByStepOne(@Param("id") Integer id);-->
+    <select id="getEmpAndDeptByStepOne" resultMap="empAndDeptByStepResultMap">
+        select * from t_emp where id=#{id};
+    </select>
+
+    <!--List<Employee> getDeptAndEmpByStepTwo(@Param("did") Integer did);-->
+    <select id="getDeptAndEmpByStepTwo" resultType="Employee">
+        select * from t_emp where did=#{did};
+    </select>
+</mapper>

@@ -1,0 +1,17 @@
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>测试域对象共享数据</h3>
+<a th:href="@{/testServletAPIByRequest}">测试向request域对象共享数据通过ServletAPi</a><br/>
+<a th:href="@{/testModelAndView}">测试向request域对象共享数据通过ModelAndView</a><br/>
+<a th:href="@{/testModel}">测试向request域对象共享数据通过Model</a><br/>
+<a th:href="@{/testMap}">测试向request域对象共享数据通过Map</a><br/>
+<a th:href="@{/TestModelMap}">测试向request域对象共享数据通过ModelMap</a><br/>
+<a th:href="@{/TestSession}">测试向Session域对象共享数据通过HttpSession</a><br/>
+<a th:href="@{/TestApplication}">测试向Application域对象共享数据通过ServletContext</a><br/>
+</body>
+</html>

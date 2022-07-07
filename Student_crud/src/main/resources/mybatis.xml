@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+    <!--设置类的别名-->
+    <typeAliases>
+        <package name="pojo"/>
+    </typeAliases>
+    <!--引入映射文件-->
+<!--    <mappers>-->
+<!--        <package name="mappers"/>-->
+<!--        &lt;!&ndash;-->
+<!--        1. 此方式必须保证mapper接口和mapper映射文件必须在相同的包名下-->
+<!--        2. mapper接口要和mapper映射文件的名字一致-->
+<!--        &ndash;&gt;-->
+<!--    </mappers>-->
+
+</configuration>

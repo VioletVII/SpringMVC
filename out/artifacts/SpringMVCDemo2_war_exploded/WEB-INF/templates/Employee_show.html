@@ -1,0 +1,55 @@
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>显示员工的信息</title>
+</head>
+<body>
+        <table id="deleteTable" border="1" cellspacing="0" cellpadding="0" style="text-align: center">
+            <tr><th colspan="5">员工的信息</th></tr>
+            <tr>
+                <td>id</td>
+                <td>lastName</td>
+                <td>email</td>
+                <td>gender</td>
+                <td>options</td>
+            </tr>
+            <tr th:each="employee : ${employeeList}">
+                <td th:text="${employee.id}"></td>
+                <td th:text="${employee.lastName}"></td>
+                <td th:text="${employee.email}"></td>
+                <td th:text="${employee.gender}"></td>
+                <td>
+                    <a class="delete" @onclick="deleteEmployee" th:href="@{/employee/}+${employee.id}">delete</a>
+                    <a th:href="@{'/employee/'+${employee.id}}">update</a>
+                    <!--两种写法均可 -->
+                </td>
+            </tr>
+        </table>
+        <script type="text/javascript" th:src="@{/static/vue.js}"></script>
+        <script type="text/javascript">
+            var vue=new vue({
+                el:"#deleteTable",
+                method:{
+                    //event表示当前事件
+                    deleteEmployee:function (event) {
+                        //通过id获取表单标签
+                        var deleteForm = document.getElementById("deleteForm");
+                        //将触发事件的超链接的href属性为表单的action属性赋值
+                        deleteForm.action = event.target.href;
+                        //提交表单
+                        deleteForm.submit();
+                        //阻止超链接的默认跳转行为
+                        event.preventDefault();
+                    }
+                }
+            })
+        </script>
+
+        <!-- 作用：通过超链接控制表单的提交，将post请求转换为delete请求 -->
+        <form id="deleteForm" method="post">
+            <!-- HiddenHttpMethodFilter要求：必须传输_method请求参数，并且值为最终的请求方式 -->
+            <input type="hidden" name="_method" value="delete">
+        </form>
+</body>
+</html>

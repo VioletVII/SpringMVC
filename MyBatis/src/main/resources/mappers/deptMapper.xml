@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- MyBatis中可以面向接口操作数据，要保证两个一致
+mapper接口的全类名和映射文件的命名空间（namespace）保持一致
+mapper接口中方法的方法名和映射文件中编写SQL的标签的id属性保持一致-->
+<mapper namespace="mappers.deptMapper">
+
+    <!--Demptment getEmpAndDeptByStepTwo(@Param("did") Integer did);-->
+    <select id="getEmpAndDeptByStepTwo" resultType="Demptment">
+        select * from t_dept where did=#{did};
+    </select>
+
+<!--
+解决一对多的关系
+a.使用collection
+b.使用分部查询
+-->
+    <resultMap id="getDeptAndEmpResultMap" type="Demptment">
+        <id property="did" column="did"></id>
+        <result property="depName" column="dep_name"></result>
+        <!--
+        collection：用来处理一对多的映射关系
+        ofType：表示该属性对应的集合中存储的数据的类型
+        -->
+        <collection property="emps" ofType="Employee">
+            <id property="id" column="id"></id>
+            <result property="empName" column="emp_name"></result>
+            <result property="age" column="age"></result>
+            <result property="email" column="email"></result>
+        </collection>
+    </resultMap>
+    <!--List<Employee> getDeptAndEmp(@Param("did") Integer did);-->
+    <select id="getDeptAndEmp" resultMap="getDeptAndEmpResultMap">
+        select * from t_dept left join t_emp on t_dept.did=t_emp.did where t_dept.did=#{did};
+    </select>
+
+
+    <resultMap id="getDeptAndEmpByStepResultMapOne" type="Demptment">
+        <id property="did" column="did"></id>
+        <result property="depName" column="dep_name"></result>
+        <collection property="emps" select="mappers.empMapper.getDeptAndEmpByStepTwo" column="did"
+        fetchType="eager">
+        </collection>
+    </resultMap>
+    <!--List<Employee> getDeptAndEmpByStepOne(@Param("did") Integer did);-->
+    <select id="getDeptAndEmpByStepOne" resultMap="getDeptAndEmpByStepResultMapOne">
+        select * from t_dept where did=#{did};
+    </select>
+</mapper>

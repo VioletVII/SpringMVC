@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- MyBatis中可以面向接口操作数据，要保证两个一致
+mapper接口的全类名和映射文件的命名空间（namespace）保持一致
+mapper接口中方法的方法名和映射文件中编写SQL的标签的id属性保持一致-->
+<mapper namespace="mimiSSM.mapper.OrderMapper" >
+
+    <resultMap id="BaseResultMap" type="mimiSSM.pojo.OrderDetail">
+        <id column="odid" jdbcType="INTEGER" property="odid" />
+        <result column="oid" jdbcType="CHAR" property="oid" />
+        <result column="pid" jdbcType="INTEGER" property="pid" />
+        <result column="pnumber" jdbcType="INTEGER" property="pnumber" />
+        <result column="ptotal" jdbcType="DOUBLE" property="ptotal" />
+        <result column="p_name" jdbcType="VARCHAR" property="pName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        odid,oid,p_id as pid,pnumber,ptotal,p_name
+    </sql>
+    <!--//查询所有的订单
+    List<OrderDetail> selectAll();-->
+    <select id="selectAll"  resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+        from orderdetail join  product_info
+        on orderdetail.pid=product_info.p_id
+        order by odid desc;
+    </select>
+
+    <!--//分页显示订单
+    List<OrderDetail> splitPage(Integer pageNum,Integer pageSize);-->
+    <select id="splitPage"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+        from orderdetail join  product_info
+        on orderdetail.pid=product_info.p_id
+        order by odid desc
+    </select>
+
+    <!--//根据指定的订单id，查询订单号
+    String getByOdid(Integer odid);-->
+    <select id="getByOdid" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select oid from orderdetail where odid=#{odid};
+    </select>
+
+   <!-- //查询指定订单的详细信息
+    OrderTail getByOid(String oid);-->
+    <select id="getByOid" parameterType="java.lang.String" resultType="mimiSSM.pojo.OrderTail">
+        select oid,xmorder.uid,xmorder.addressId,totalprice,cnee,phone,remarks,status,odate
+        from xmorder join address
+        on xmorder.uid=address.uid and xmorder.addressId=address.addressId
+        where oid=#{oid};
+    </select>
+</mapper>

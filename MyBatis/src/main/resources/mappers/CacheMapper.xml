@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- MyBatis中可以面向接口操作数据，要保证两个一致
+mapper接口的全类名和映射文件的命名空间（namespace）保持一致
+mapper接口中方法的方法名和映射文件中编写SQL的标签的id属性保持一致-->
+<mapper namespace="mappers.CacheMapper">
+    <cache/> <!--开启MyBatis的二级缓存-->
+    <!--开启第三方的二级缓存,不好使-->
+    <!--<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
+
+    <!--Employee getEmpById(@Param("id")Integer id);-->
+    <select id="getEmpById" resultType="employee">
+        select * from t_emp where id=#{id}
+    </select>
+</mapper>
